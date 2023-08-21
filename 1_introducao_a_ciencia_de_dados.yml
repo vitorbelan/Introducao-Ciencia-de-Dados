@@ -1,0 +1,142 @@
+INTRODUCO A CIENCIA DE DADOS
+    NOTAS DE AULA E REVISAO DE MODELOS
+
+PARTE 1     ICD introducao a ciência de dados
+
+    mELLO, r f Machine Learning: A pratical approach on the statistical learning theory
+    sIMON HAYKIN, Neural Network : A comprehensive foundation
+    Bishop, C.M Pattern Recognition and Machine Learning # primeiro contato
+    Freman and Skapura, Neural Network: Algotithms, Applications and Programming Techiniques # livro mais introdutório antes do simon
+
+    Faceli, kati; Lorena, Ana Carolina, Gama Joao: Inteligencia Artificial - Uma Abordagem de Aprendizado de Máquina
+
+    Ciencia de dados
+            Transformar grande quantidade ede dadso brutos em insights para o negócio e tomadas de decisao para atingir melhores resultados. Campo antigo porém se popularizou com o big data. Area interdisciplinar. 
+
+    Mineraçao de Dados
+            Procedo de explorar grandes quantidades de dados á procura de padrões consistentes, como regras de associaçao ou sequencias temporais para detectar relacionamentos sistemáticos entre variáveis e detectar novos subconjuntos de dados.
+
+    Exemplo do que busca responder?
+            Quais clientes te maior probabildiade em novas compras ?
+            Quais devedores tem maior probabilidade em pagar ?
+            Como prever a necessidade de um produto em estoque ?
+
+    Espécie de padrão de projetos de ciëncia de dados:
+        #Coleta de dados
+            -Obter dados do problema tais como textos da web
+            -Criar software para obtençao de dados
+
+            -EX: criar um robot para obter noticias do mercado financeiro:
+        #Preparaçao dos dados
+            -Selecionar palavras de interesse
+            -Computar frequencia de cada palavra
+            -Ex: remover stopwords "preposições":
+            -Organizacao ou estruturaçao dos dados
+                -Remocao de dados desnecessarios
+                -Preenchimento de dados faltantes
+                    -Por aproximaçao em relaçao as outras instancias
+                    -Eliminacao da instancia com dados faltantes
+                    -até mesmo nao preencher
+        #Modelagem dos dados
+            - Criar um modelos para responder qual classe associdada a cada texto em funcao de um conjunto 
+            - Ex: Rpresentar cada texto como um vetor num espaço, verificar documentos que sao mais similares:
+            -Adoçao de uma estrategia de modelo baseada em
+                Estatisticca processos estocasticos, Aprendizado de maquinas
+    
+    Primeiro exemplo:
+        #Coleta de dados
+            Dataset flor iris
+        #Preparaçao dos dados
+            Nao precisa preparar ou pré-procesar -->simplifica demais<--
+        #Modelagem
+            Adotar um modelos em hiperplanos separadores
+
+        Num estudo : 
+        as features, atributos, ou caracteristicas, -> neste exemplo sao suficiente para descrever (classificar - classe) as flores
+            as features, atributos, variáveis de interesse ou caracteristicas: tamanho da petala, do caule, diametro
+            classe: a partir das features descrevem o tipo da flor
+
+        # Usando R
+        uSANDO R um plot bidimensional de uma variável em funcao da outra
+                cmd: plot(iris[,1:4], col = iris[,5]) # plotar as clunas 1 a 4 colorindo em funcao da coluna 5
+
+        #preciso ter uma preucupaçao em entender o quao separável o meu espaço é
+            -hiperplanos para separar as variaveis
+            -histograma para ver o quao as variáveis sao separadas entre si
+                ex: imagina enxergar as classes em funcao de um atributo só, como a largura e comprimeto de petala se comportam com a projeçao só em funçao do comprimento de pétala
+
+
+    Ferramental Básico:
+        #Histogramas
+            -Analise dos histrogrmas de cada atributo como forma de observar a distribuicáo dos dados
+            -Separacao entre classes pode se dar pela simples analise dos histogramas
+        #Histogramas por atributos
+                -Ex em r:
+                cmd:
+                p <- plot_ly(alpha - 0.6)
+                + add_hisogram(x = iris[1:50,1])
+                + add_hisogram(x = iris[1:100,1])
+                + add_hisogram(x = iris[101:150,1])
+                + layout(barmode + "overlay")
+        
+            quanto mais hiperplanos o modelo tiver muita chance de decorar o modelo ele terá overffiting
+
+        #Correlaçao entre variáveis
+            -Refere-se ao grau de relacionamento linear entre duas variaveis
+            -ex: Correlaçao entre alturas de duas geraços de uma mesma familia
+            -A correlaçao explorar relacionamento preditivos entre variáveis
+                -Ex em r:
+                cmd: co(1:10, 1:10)
+            - Quando correlacao =1  igual a significa que x=y seguindo uma tendencia linear
+            - Quando correlacao = - 1  igual a significa que x=-y uma anticorrelaçao 
+            - Uma alta correlaçao entre variáveis signfica que posso escolher entre uma ou outra variável elas tem uma grande dependëncia entre elas
+                -Ex em R:
+                cmd: cor(iris[,1],iris[,3])
+
+            -Correlaçao de PEARSON entre variáveis:
+                rho(x,y) = covariancia(x,y)/(disviopadraox desviopadraoy)
+                         = covariancia(variável subtraída da média)
+                        
+                        produto interno me retorna similaridade entre as variáveis
+
+            - Correlaçao de SPEARMAN entre variáveis:
+                Avalia quao bem o relacionamento entre duas variáveis pode ser descrito por uma funçao monotönica 
+
+        #AutoValores ee AutoVetores
+            -Maneira de compreender a relevanica de cada atributo no espaço de dados
+            -Pérmite avaliar correlação entre atributos
+                Eventualmente um atributo pode ser removido em duncao dele ja ser bem representado por outros atributos
+            
+            Autovetores
+                aqueles que a transformaçao aplicada ao vetor muda somente a magnitude(comprimento) ou a direçao. Essa tranformaçao aplicada ao vetor nos diz 
+                que ela atua sobre um  auto espaço linear
+
+        #PCA - Principal Component Analysys
+            -Resultado natural da decomposicão de autovalores e autovetores
+            -Muito utilizada para estudar variancias de atributos em espaçoes e suas releväncias
+            -Olhar para um espaço com um monte de variaveis e descobrir quais dimensoes possui correlaçao entre essas dimensoes
+                -Ex em R:
+                cmd: require(splus2R)
+                     data = as.data.frame(rmvnorm(100, rho = 0.9) * 5+10)
+                     colnames(data) = c("Statistics", "Physics")
+                     plot(data)
+            # Para aplicarmo PCA precisamos fazer uma centralizaçao dos dados
+                scaled = apply(data ,2 ,function(x) {x - mean(x)})
+                plot(scaled)
+            # pq centralizo os dados? 
+                para evidenciar as relações vetoriais, pq depenendo dos dados eles podem acabar ficando tudo num mesmo quadrante
+                dicas:
+                    se as variáveis tiverem a mesma unidade de medida
+                        # podemos simplesmente subtrair a média 'x-mean(x)'
+                        # escreevemos a matrix de covariancia
+                    se tiverem unidades distintas
+                        # consideramos a centralizaçao pela média porém também dividimos pelo desvio padrao ('x-mean(x)')/sd(x)
+                        # escrevemos a matriz de correlação  
+                        # o intuito ao dividir é para diminuir ou reduzir a dominancia de uma variável em funçao da outra ja que estou dividindo ela pelo quanto ela varia, além de admensionalizar a variável (correçao de escala das variáveis)
+                        # Porque usamos o produto interno
+                        -quando gero o produto interno eu estou fazendo a projeçao de vetores, e estarei gerando  algo parecido como uma regressao linear, algo conhecido na geometria analitica como autoespaço linear, para saber o tipo de regressão linear que estao sendo obtidas nas variáveis
+                        -no meu espaço centralizado a soma dos autovalores produz a soma das variancias, consequentemente >>>> meus autovalores produzem as variancias no meu espaço centralizado
+                        -qual dimensao escolheria entao (levando em conta uma ideia na reducão de espaço) ? aquelas em que os autovalores sao mais importantes, os quais tem maior importancia relativa, maior autovalores
+
+
+             

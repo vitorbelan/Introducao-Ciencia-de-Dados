@@ -1,0 +1,34 @@
+INTRODUCO A CIENCIA DE DADOS
+    NOTAS DE AULA E REVISAO DE MODELOS
+
+PARTE 1     ICD introducao a ciência de dados
+
+    mELLO, r f Machine Learning: A pratical approach on the statistical learning theory
+    sIMON HAYKIN, Neural Network : A comprehensive foundation
+    Bishop, C.M Pattern Recognition and Machine Learning # primeiro contato
+    Freman and Skapura, Neural Network: Algotithms, Applications and Programming Techiniques # livro mais introdutório antes do simon
+
+    Faceli, kati; Lorena, Ana Carolina, Gama Joao: Inteligencia Artificial - Uma Abordagem de Aprendizado de Máquina
+
+    Ciencia de dados
+            Transformar grande quantidade ede dadso brutos em insights para o negócio e tomadas de decisao para atingir melhores resultados. Campo antigo porém se popularizou com o big data. Area interdisciplinar. 
+
+    Mineraçao de Dados
+            Procedo de explorar grandes quantidades de dados á procura de padrões consistentes, como regras de associaçao ou sequencias temporais para detectar relacionamentos sistemáticos entre variáveis e detectar novos subconjuntos de dados.
+
+    Exemplo do que busca responder?
+            Quais clientes te maior probabildiade em novas compras ?
+            Quais devedores tem maior probabilidade em pagar ?
+            Como prever a necessidade de um produto em estoque ?
+
+    Espécie de padrão de projetos de ciëncia de dados:
+        #Coleta de dados
+            -Obter dados do problema tais como textos da web
+            -EX: criar um robot para obter noticias do mercado financeiro:
+        #Preparaçao dos dados
+            -Selecionar palavras de interesse
+            -Computar frequencia de cada palavra
+            -Ex: remover stopwords "preposições":
+        #Modelagem dos dados
+            - Criar um modelos para responder qual classe associdada a cada texto em funcao de um conjunto 
+            - Ex: Rpresentar cada texto como um vetor num espaço, verificar documentos que sao mais similares:

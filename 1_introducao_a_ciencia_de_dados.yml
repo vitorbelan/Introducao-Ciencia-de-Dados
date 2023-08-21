@@ -111,7 +111,7 @@ PARTE 1     ICD introducao a ciência de dados
                 aqueles que a transformaçao aplicada ao vetor muda somente a magnitude(comprimento) ou a direçao. Essa tranformaçao aplicada ao vetor nos diz 
                 que ela atua sobre um  auto espaço linear
 
-        #PCA - Principal Component Analysys
+        #PCA - Principal Component Analysys 
             -Resultado natural da decomposicão de autovalores e autovetores
             -Muito utilizada para estudar variancias de atributos em espaçoes e suas releväncias
             -Olhar para um espaço com um monte de variaveis e descobrir quais dimensoes possui correlaçao entre essas dimensoes
@@ -137,6 +137,7 @@ PARTE 1     ICD introducao a ciência de dados
                         -quando gero o produto interno eu estou fazendo a projeçao de vetores, e estarei gerando  algo parecido como uma regressao linear, algo conhecido na geometria analitica como autoespaço linear, para saber o tipo de regressão linear que estao sendo obtidas nas variáveis
                         -no meu espaço centralizado a soma dos autovalores produz a soma das variancias, consequentemente >>>> meus autovalores produzem as variancias no meu espaço centralizado
                         -qual dimensao escolheria entao (levando em conta uma ideia na reducão de espaço) ? aquelas em que os autovalores sao mais importantes, os quais tem maior importancia relativa, maior autovalores
+                        - usando o gráfico biplot se o elas possui angulo agudo entre si (produto interno positivo) elas sao correlatas, qualquer ponto entre esses dois vetores conseguem um equilibrio entre as duas variáveis
 
 
              

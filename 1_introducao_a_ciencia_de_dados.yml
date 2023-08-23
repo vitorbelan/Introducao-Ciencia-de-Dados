@@ -138,6 +138,68 @@ PARTE 1     ICD introducao a ciência de dados
                         -no meu espaço centralizado a soma dos autovalores produz a soma das variancias, consequentemente >>>> meus autovalores produzem as variancias no meu espaço centralizado
                         -qual dimensao escolheria entao (levando em conta uma ideia na reducão de espaço) ? aquelas em que os autovalores sao mais importantes, os quais tem maior importancia relativa, maior autovalores
                         - usando o gráfico biplot se o elas possui angulo agudo entre si (produto interno positivo) elas sao correlatas, qualquer ponto entre esses dois vetores conseguem um equilibrio entre as duas variáveis
+                        - um ponto é mais correlato a uma dada feature quando possuir um angulo agudo menor em relaçao à feature do vetor comparado
+
+                aplicanddo sobre um outro dataset:
+                    https://archive.ics.uci.edu/ >>>>>> cnj wine
+                    cmd: r
+                        dataset = read.table("wine.data", sep = ",")
+                            1 - Y = dataset[,1] # sao as classes
+                            2 - X = dataset[, 2:14] # sao meinhas features x
+                            3 - plot(X , col = Y, pch = 20) # plot para mostrar as variaçoes entre cada feature
+                            4 - scaled = apply(X, 2 , function(col) {(col -mean(col)/sd(col)) }) # plot para centralizar os produtos internos entre vetores posiçao, além da divisao em funçao do desvio padrão para corrigir diferenças de escalas e unidades 
+                            5 - apply (scaled, 2, function(col) { range(col) }) # funçao utilizada para ver os ranges de cada coluna
+                                    # talvez apagar? aqui é a construucao da matriz de mudança de base (de covariancia) responsável por distorcer os espaçoes e traze-los em função dos eixos ortogonais relevantes
+                                # Descoberta dos eixos (ou auot-espaçoes lineares) sobre os quais a mtriaz de mmudança de base (,matriz de covariancia) opera permitindo que descubrams relaçoes lineares de dependencia linear entre atributos
+                                # além disso a descoberta dos auto-valores associados aos auot-vetores com o intuito de descorbira as variancia relativas a cada auto-veotr
+                            6 - scaled.cov = cov(scaled) # retorna a matriz de covariancia, matriz de 13x13 (cmd: dim(scaled.cov)), ou mais especifico do produto interno de cada feature em relaçao a outra, e todo possíveis autoespacos que podem ser obtidos nesse espaço R13
+                            7 - eigens =eigen (scaled.cov) #variavel para produzir meus autovalores e autovetores
+                            8 - eigens$values # autovalores >>>> tenho a importancia do componente principal 1 até o ultimo. sempre na ordem do mais importante para o menos importante
+                            9 - eigens$vectors # autovetores >>>> tenho na primeira coluna o primeiro componente principal (mais principal), o vetor resultando do primeiro atributo é toda a primeira linha, e assim sucessivamente
+
+                            ############ primeira analise
+
+                            10 - sum(eigens$values) # me dão a soma das varianca do meu espaço scalado em funçao do meu atributo >>>> variancia total do meu espaço
+                            11 - var[scaled[,1]]    # variancia em relaçao ao atributo 1
+                            12 - var[scaled[,2]]    # variancia em relaçao ao atributo 2
+                            13 - var[scaled[,3]]    # variancia em relaçao ao atributo 3 e assim para cada um dos atributos
+
+                            14 - (eigens$values)/sum(eigens$values) # normalizado para ver a contribuiçao percental de cada novo atributo
+                                                           
+                            # Von Neumann
+                            v.total = 0
+                            for (i in 1: ncol(scaled)) { v.total = v.toal +var (14 - (eigens$values[,i])}
+                            print(v.total)
+
+
+                            15 - plot (eigens$values)/sum(eigens$values , pch =20, cex = 3) # plotando para ver a contribuiçao percentual
+                            15 - plot (cumsum(eigens$values)/sum(eigens$values) , pch =20, cex = 3) # plotando para ver a soma acumulada da contribuiçao percentual
+                            16 - abline (v=8, h=0.9)    # criando uma linha para analise
+
+
+                            17 - thinking by yourself   # se eu pegar os 8 primeiros componentes principais eu estou reduzindo a dimensionalidade do meu espaço, mas estarei mantendo cerca de  90% da informaçao revelante do meu espaço que é representada VARIÄNCIA DO meu espaço.  A VARIANCIA REPRESENTA A QUANTIDADE DE INFORMAÇAO RELEVANTE QUE EU TENHO. SE eu usar 4 componentes vou manter cerca de 70% da informação relevante do meu espaço. 95% [E UM PONTO DE CORTE PARA A INFORMAÇAO RELEVANTE QUE GRANDE PARTE DA LITERATURA USA]
+                            18.1 -VOU FAZER A ROTAÇAO DOS MEUS DADOS                           
+                            18.2 - as.numeric(scaled[1, ]) # vetor do meu primeiro atributo
+                            18.3 - eigen$vectores%*%as.numeric(scaled[1, ]) # matriz de mudança de base do primeiro vetor
+                            #Transformaçao linear sobre os vetores linha da matriz scaled tento aplicado sobre cada vetor os auto-valores
+                            19 - scores = scaled %*% eigens$vectores #matriz de mudança de base de todos meu atributos precisei trocar por causa das dimensoes 1x13 * 13x13 isso é o gráfico de scores o que foi feito? rotacionado o espaço em funçao dos componentes principais
+                            20 - scores = as.data.frame(scaled %*% eigen$vectores) # transformando em um dataframe
+                            21 - colnames(scores) = paste("PC",1:13,sep = "") # colocando o nome de cada coluna como PC1, PC2, PC3 >>>Principal Component
+                            22 - colnames(scores)
+                            23 - scores[,1:9] # pegue da primeira coluna até a 9 pq depois da 9 coluna tem uma uantidade de informaçao muito pequena
+                            24 - plot(scores[,1:4] , col =Y)  # gráfico de assumindo somente as variaçoes entre as 4 principais variáveis
+                                17.1 - automatizando a escolha  dos principais componentes algo parecdo com os comandos 20,21,22,23,24:
+                                    r = cumsum(eigens$values/sum(eigens$values) )
+                                    id = which( r>= 0.9)[1]
+                                    x.reduzida = scores[,1:id]
+                                    plot(x.reduzia, col =Y)
+
+                            
+
+
+
+
+
 
 
              

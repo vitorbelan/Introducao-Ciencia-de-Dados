@@ -166,10 +166,19 @@ PARTE 1     ICD introducao a ciência de dados
 
                             14 - (eigens$values)/sum(eigens$values) # normalizado para ver a contribuiçao percental de cada novo atributo
                                                            
-                            # Von Neumann
-                            v.total = 0
-                            for (i in 1: ncol(scaled)) { v.total = v.toal +var (14 - (eigens$values[,i])}
-                            print(v.total)
+                    # Von Neumann
+                    v.total = 0
+                    for (i in 1: ncol(scaled)) { v.total = v.toal +var (14 - (eigens$values[,i])}
+                    print(v.total)
+
+                    von neuman normalizou os autovalores pela soma: ao fazer isso ele tem uma soma de probabilidade se somarmos todas teremos 1 como resultado
+                        14.1 - (eigens$values)/sum(eigens$values) 
+
+                    podemos medir a entropia da fonte de informaçao no caso a antena em R13
+                        H(prob) = -sum(prob*log(prob)) # proposta por Shannon
+                        prob = (eigens$values)/sum(eigens$values) 
+                        -sum(prob*(log(prob)/log(2))) # quanto maior esse valor mais incerta é essa fonte dessa informação
+
 
 
                             15 - plot (eigens$values)/sum(eigens$values , pch =20, cex = 3) # plotando para ver a contribuiçao percentual
@@ -194,7 +203,73 @@ PARTE 1     ICD introducao a ciência de dados
                                     x.reduzida = scores[,1:id]
                                     plot(x.reduzia, col =Y)
 
-                            
+        Aprendizado baseado em instancia:
+            Vou definidir uma nova instäncia a partir dos pontos vizinhos mais próximos
+            # Algoritmo de k-Nearest Neighbors
+                vai contar quantos "votos" eu tenho para cada i-ésimo vizinho do cenário e faz uma média
+                ex: em R
+                            X       -> CNJ DE ENTRADAS
+                            Y       -> CLASSE ASSOCIADA A CADA EXEMPLO
+                            K      -> NUMERO DE VIZINHOS MAIS PRÓXIMO QUE DESEJO ENCONTRAR
+                            query   -> PONTO DE CONSULTA; meu novo ponto que desejo classificar
+                            #
+                            # Supoe que o espaço de atrtibutos de entrada X é informtativo
+                            # para prosseguir com o processo de classificaçao   
+                            #
+                            knn <- function(K, X, Y) {
+                                # distancia euclidiana que a consulta( query) tem em relacao
+                                # aos exemmplos ou linhas da matriz X
+                                E = apply(X, 1, function(row) {sqrt(summ((row - query)^2)) })
+                                ids = sort.list(E, dec = F)[1:K]
+                                
+                                classes = unique(Y)
+                                count   = rep(0, lenght(classes))
+                                for (class in classes){
+                                        countt[i] = sum( class == Y[ids])
+                                        i = i + 1
+                                }
+
+                                ret = list()
+                                ret$classes = classes
+                                ret$count = count
+                                ret$max.prob.class = classes[which.max(count)]
+
+                                return (ret)
+
+                            }
+                            dataset = read.table("wine.data", sep = ",")
+                            X = dataset[,2:14]
+                            Y = dataset[,1]
+                            res = knn(query=X[1,], k=5, X=X, Y=Y)
+                            print(res)
+
+                            #conjunto de treinamento
+                            ids samples(1:nrow(X), size = ceiling(0.5*nrow(X)))
+                            X.train = X[ids,]
+                            Y.train = Y[ids]
+
+                            # Conjunto de teste
+                            X.test = X[-ids,]
+                            Y.test = Y[-ids]
+
+                            R= NULL
+
+                            for (k in 1:10){
+                                        cat("Running for k = ", k , "\n")
+                                        accuracy = 0
+                                        for (i in 1:nrow(X.test)) {
+
+                                                    res = knn(query=X[i,], k=k, X=X.train, Y=Y.train) # testo meu modelo de algo que nao foi visto
+                                                    if (res$max.prob.class = Y.tes[i]){
+                                                        accuracy = accuracy + 1
+                                                    }
+                                        }
+
+                                        accuracy = accuracy/nrow(X.test)
+                                        R = rbind(R, C(k, accuracy))
+                                        cat("Accuracy = ", accuraci, "\n")
+                            }
+                            plot(R, xlab = "k values", ylab = "Accuracy")
 
 
 

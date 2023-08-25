@@ -219,59 +219,93 @@ PARTE 1     ICD introducao a ciência de dados
                             knn <- function(K, X, Y) {
                                 # distancia euclidiana que a consulta( query) tem em relacao
                                 # aos exemmplos ou linhas da matriz X
-                                E = apply(X, 1, function(row) {sqrt(summ((row - query)^2)) })
-                                ids = sort.list(E, dec = F)[1:K]
+                                E = apply(X, 1, function(row) {sqrt(summ((row - query)^2)) }) # distancia euclianda que cada mlinha do meu datset tem em relacao a minha consulta 
+                                ids = sort.list(E, dec = F)[1:K] # vai trazer as posicões em x que estao mais orõxima do meu ponto de consulta
                                 
-                                classes = unique(Y)
-                                count   = rep(0, lenght(classes))
+                                classes = unique(Y) # vai tirar as repeticoes e manter somente elementos unicos
+                                count   = rep(0, lenght(classes)) # VAI TRAZER A quantidade de votos que cada classe teve 
                                 for (class in classes){
-                                        countt[i] = sum( class == Y[ids])
+                                        countt[i] = sum( class == Y[ids]) # A soma de votos por classe
                                         i = i + 1
                                 }
 
                                 ret = list()
                                 ret$classes = classes
                                 ret$count = count
-                                ret$max.prob.class = classes[which.max(count)]
+                                ret$max.prob.class = classes[which.max(count)] # retorna a posicao no vetor da classe que contem a maior qtd de votos
 
                                 return (ret)
 
                             }
-                            dataset = read.table("wine.data", sep = ",")
-                            X = dataset[,2:14]
-                            Y = dataset[,1]
-                            res = knn(query=X[1,], k=5, X=X, Y=Y)
-                            print(res)
 
-                            #conjunto de treinamento
-                            ids samples(1:nrow(X), size = ceiling(0.5*nrow(X)))
-                            X.train = X[ids,]
-                            Y.train = Y[ids]
+                            tes.wine <- function(PCA = FALSE, perc =0.9) {
 
-                            # Conjunto de teste
-                            X.test = X[-ids,]
-                            Y.test = Y[-ids]
+                                # PCA == FALSE ----> sem transformaçao por auto-valores/auto-vetores
+                                # PCA == TRUE  ----> com transformacao e selecionando umm subconjunto dos PCs   
 
-                            R= NULL
+                                #carrega o conjunto de dado wine
+                                dataset = read.table("wine.data", sep = ",")
 
-                            for (k in 1:10){
-                                        cat("Running for k = ", k , "\n")
-                                        accuracy = 0
-                                        for (i in 1:nrow(X.test)) {
+                                #monta os espacoes de entrada e saida
+                                X = dataset[,2:14]  # espaço de entrada
+                                Y = dataset[,1]     # espaço de saida
 
-                                                    res = knn(query=X[i,], k=k, X=X.train, Y=Y.train) # testo meu modelo de algo que nao foi visto
-                                                    if (res$max.prob.class = Y.tes[i]){
-                                                        accuracy = accuracy + 1
-                                                    }
-                                        }
+                                if (CPA) {
+                                    # Transformaçao especial
 
-                                        accuracy = accuracy/nrow(X.test)
-                                        R = rbind(R, C(k, accuracy))
-                                        cat("Accuracy = ", accuraci, "\n")
-                            }
-                            plot(R, xlab = "k values", ylab = "Accuracy")
+                                    #Centralizacao e re-escla dos atributos/variaveis/features
+                                    scaled = apply (X, 2, function(col) { (col - mean(col))/sd(col)})
+
+                                    #Avalie as dependencias lineares entre os atributos
+                                    C = cov(scaled) #13x13
+
+                                    #Decomposiçao de auto-valores e auto-vetores
+                                    E = eigen(C)
+
+                                    plot(cumsum(E$values/sum(E%values)), main = 'Importancia agregada por PC',
+                                        xlab = "# PCs", ylab = "Importancia %")
+                                    locator(1)
+
+                                    numero.PCs = which(cumsum(E$values/sum(E%values)) >= perc)[1]
+
+                                    Transform = scaled %*% E%vectores
+                                    X = Transform [,1:numero]
+                                    
+                                }
 
 
+                                # res = knn(query=X[1,], k=5, X=X, Y=Y) parte do codigo restria a priemira parte da  aula
+                                # print(res)
+
+                                #conjunto de treinamento
+                                ids = samples(1:nrow(X), size = ceiling(0.5*nrow(X)))
+                                X.train = X[ids,]           # base de conhecimento (knowledge base)
+                                Y.train = Y[ids]            # compoem as classes ou rotulos dos exemplos da base de conhecimento
+
+                                # Conjunto de teste 
+                                X.test = X[-ids,]           # pega ccomplemento desse conjunto
+                                Y.test = Y[-ids]
+
+                                R= NULL
+
+                                for (k in 1:10){
+                                            cat("Running for k = ", k , "\n")
+                                            accuracy = 0    # taxa de acerto     
+                                            for (i in 1:nrow(X.test)) {
+
+                                                        res = knn(query=X[i,], k=k, X=X.train, Y=Y.train) # testo meu modelo de algo que nao foi visto
+                                                        if (res$max.prob.class = Y.tes[i]){
+                                                            accuracy = accuracy + 1
+                                                        }
+                                            }
+
+                                            accuracy = accuracy/nrow(X.test)
+                                            R = rbind(R, C(k, accuracy))
+                                            cat("Accuracy = ", accuraci, "\n")
+                                }
+                                plot(R, xlab = "k values", ylab = "Accuracy")
+
+                                }
 
 
 

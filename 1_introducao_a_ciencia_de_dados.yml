@@ -206,7 +206,16 @@ PARTE 1     ICD introducao a ciência de dados
         Aprendizado baseado em instancia:
             Vou definidir uma nova instäncia a partir dos pontos vizinhos mais próximos
             # Algoritmo de k-Nearest Neighbors
-                vai contar quantos "votos" eu tenho para cada i-ésimo vizinho do cenário e faz uma média
+            -tecnica mas comum do IBL (Instance-Based Learnin)
+            -calcula a distancia euclidinada da nova instancia(novo ponto a ser conhecido) em funcao de cada instancia na base de conhecimento
+            -Seleciona as k instancia de treinamento mais próxima
+            -define o atributo de saida na forma
+                -Discreta:
+                    ex: o maior numero de votos decide-se sea a cor é vermelha ou verde
+                -Continua:
+                    ex: define se o atributo de saida pela ponderacao das saidas das K instancias mais proximas
+            
+            vai contar quantos "votos" eu tenho para cada i-ésimo vizinho do cenário e faz uma média
                 ex: em R
                             X       -> CNJ DE ENTRADAS
                             Y       -> CLASSE ASSOCIADA A CADA EXEMPLO
@@ -262,48 +271,62 @@ PARTE 1     ICD introducao a ciência de dados
                                     #Decomposiçao de auto-valores e auto-vetores
                                     E = eigen(C)
 
-                                    plot(cumsum(E$values/sum(E%values)), main = 'Importancia agregada por PC',
-                                        xlab = "# PCs", ylab = "Importancia %")
+                                    plot(cumsum(E$values/sum(E%values)), main = 'Importancia agregada por PC', xlab = "# PCs", ylab = "Importancia %")
                                     locator(1)
 
                                     numero.PCs = which(cumsum(E$values/sum(E%values)) >= perc)[1]
 
                                     Transform = scaled %*% E%vectores
-                                    X = Transform [,1:numero]
+                                    X = Transform [,1:numero.PCs]
                                     
                                 }
 
 
-                                # res = knn(query=X[1,], k=5, X=X, Y=Y) parte do codigo restria a priemira parte da  aula
+                                # res = knn(query=X[1,], k=5, X=X, Y=Y) parte do codigo restrita a priemira parte da  aula 2
                                 # print(res)
 
-                                #conjunto de treinamento
-                                ids = samples(1:nrow(X), size = ceiling(0.5*nrow(X)))
-                                X.train = X[ids,]           # base de conhecimento (knowledge base)
-                                Y.train = Y[ids]            # compoem as classes ou rotulos dos exemplos da base de conhecimento
+                                R = matrix(0, nrow = 10, ncol=5)
 
-                                # Conjunto de teste 
-                                X.test = X[-ids,]           # pega ccomplemento desse conjunto
-                                Y.test = Y[-ids]
+                                for (j in 1:5) {
 
-                                R= NULL
+                                    #######
+                                    #Hold -out
+                                    #######
 
-                                for (k in 1:10){
-                                            cat("Running for k = ", k , "\n")
-                                            accuracy = 0    # taxa de acerto     
-                                            for (i in 1:nrow(X.test)) {
+                                    # - uma parcela dos dados é escolhida aleatoriamente (uniforme) para compor o conjunto de treinamento
+                                    # e o restante disjunto dos exemplos irá compor o conjunto de testes
 
-                                                        res = knn(query=X[i,], k=k, X=X.train, Y=Y.train) # testo meu modelo de algo que nao foi visto
-                                                        if (res$max.prob.class = Y.tes[i]){
-                                                            accuracy = accuracy + 1
-                                                        }
-                                            }
+                                        #conjunto de treinamento
+                                        ids = samples(1:nrow(X), size = ceiling(0.5*nrow(X)))
+                                        X.train = X[ids,]           # base de conhecimento (knowledge base)
+                                        Y.train = Y[ids]            # compoem as classes ou rotulos dos exemplos da base de conhecimento
 
-                                            accuracy = accuracy/nrow(X.test)
-                                            R = rbind(R, C(k, accuracy))
-                                            cat("Accuracy = ", accuraci, "\n")
+                                        # Conjunto de teste 
+                                        X.test = X[-ids,]           # pega ccomplemento desse conjunto
+                                        Y.test = Y[-ids]
+
+                                        R= NULL
+
+                                        for (k in 1:10){
+                                                    cat("Running for k = ", k , "\n")
+                                                    accuracy = 0    # taxa de acerto     
+                                                    for (i in 1:nrow(X.test)) {
+
+                                                                res = knn(query=X[i,], k=k, X=X.train, Y=Y.train) # testo meu modelo de algo que nao foi visto
+                                                                if (res$max.prob.class = Y.tes[i]){
+                                                                    accuracy = accuracy + 1
+                                                                }
+                                                    }
+
+                                                    accuracy = accuracy/nrow(X.test)
+                                                    R[k,j] = accuracy
+                                                    # R = rbind(R, C(k, accuracy))
+                                                    # cat("Accuracy = ", accuraci, "\n")
+                                        }
                                 }
-                                plot(R, xlab = "k values", ylab = "Accuracy")
+                                # plot(R, xlab = "k values", ylab = "Accuracy", cex =2, pch =20, cex.lab =2)
+
+                                return (R)
 
                                 }
 

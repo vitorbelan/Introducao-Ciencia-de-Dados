@@ -225,6 +225,21 @@ PARTE 1     ICD introducao a ciência de dados
                             # Supoe que o espaço de atrtibutos de entrada X é informtativo
                             # para prosseguir com o processo de classificaçao   
                             #
+
+                            ###########################
+                            # k-Nearest Neighbors
+                            ###########################
+
+                            # - Algoritimo de aprendizado supervisionado
+                            # f(x) = y
+                            # f:X -> Y mapea elemntos que estao no cjn x em y, f é um classificados ou funçao classficadora
+
+                            # O conjunto X é chamado de espaço de entradas
+                            # O conjunto Y é chamado de espaço de saídas
+                            #             Y É discreto para problemas de classificaçao numero finito de possibilidades
+
+
+
                             knn <- function(K, X, Y) {
                                 # distancia euclidiana que a consulta( query) tem em relacao
                                 # aos exemmplos ou linhas da matriz X
@@ -330,6 +345,163 @@ PARTE 1     ICD introducao a ciência de dados
 
                                 }
 
+            # DWNN - Distance Weighted Neares Neighbors
+            # ex 4
+                Regressao do espaço
+                Um refinamentoe ou variaçao do KNN
+                Considera uma ponderaçao de cada vizinho em funcao de sua distancia à nova instancia
+                aO INVES DE CONSIDERAR pontos próximo ele cria gaussianas em volta, criando um raio
+                A reposta ou classe ou rotulo vai ser um média ponderada das saídas produzidas por seus vizinhos mais próximos que também sao saídas continuas
+
+                    ###########################
+                    # Distance Weighted Neares Neighbors
+                    ###########################
+
+                    # - Algoritimo de aprendizado supervisionado
+                    # f(x) = y , f é um regressor ou funçao regressora
+                    # f:X -> Y mapea elemntos que estao no cjn x em y, 
+
+                    # O conjunto X é chamado de espaço de entradas
+                    # O conjunto Y é chamado de espaço de saídas
+                    #             Y É continuo para problemas de regressao
+                    #             numero infinito de possibilidades
+                    #
+                    # sigma -> inf
+                        # - vou produzir como resposta da regressao a média de toas as respotas dos ecemplo da minha knoledge base
+
+                    # sigma -> 0
+                        # - vou prozuir a NaN pois nao haverá qualquer vizinho mais próximo de um ponto que nao seja um pertencente a propria knoledge base
+
+                    dwnn <- function(query, X, Y, sigma) {
+                        E = apply(X, 1, function(row) {sqrt(sum((row - query)^2))} ) # calculo a distancia euclidiana novamente
+                        weight = exp(-E^2 / 2*sigma^2) # sempre entre 0 e 1 se tiver exatamente sobre o ponto o 1 vai signifiacr que estu numa distancia 0
+                                                        # e se superdistante vai dar distancia 0
+                        return(weight %*% Y/ sum(weight))
+
+                    }
+
+                    test.linear <- function(sigma) {
+                        dataset = cbind(-5:5, -5:5)
+                        print(dataset)
+                        plot(dataser, pch=20)
+
+                        X = (dataset[,1], ncol = 1)
+                        Y = (dataset[,2], ncol = 1)
+                        R = NULL
+
+                        for (x in seq(-5,5, len=100)){
+                            y = dwnn(query = x, X=X, Y=Y, sigma=sigma)
+                            R =rbind(R, c(x, y))
+
+                        }
+
+                        pints(R, col=2, pch=20)
+
+
+                    }
+
+                    # teste linear ampliando o espaço de entrda X nas consultas
+                    # a dsitribiçao de probabilidade conjunta de P(x,y) no treinamento é distinta da distribuiçao do teste
+
+                    
+                    test.linear2 <- function(sigma) {
+                        dataset = cbind(-5:5, -5:5)
+                        print(dataset)
+                        plot(dataser, pch=20,cex.lab = 2,cex.axis = 2, xlim = c(-7,7))
+
+                        X = (dataset[,1], ncol = 1)
+                        Y = (dataset[,2], ncol = 1)
+                        R = NULL
+
+                        for (x in seq(-7,7, len=100)){
+                            y = dwnn(query = x, X=X, Y=Y, sigma=sigma)
+                            R =rbind(R, c(x, y))
+
+                        }
+
+                        pints(R, col=2, pch=20)
+
+
+                    }
+                    # Regressao de uma série temporal
+
+                    test.sin <- function(sigma) {
+                        time = seq(0,9, length = 1000)
+                        series = sin(2*pi*time) # unidimensional
+                        par(mfrow=c(2,1))
+                        plot(series, xlim = c(0,1200), pch = 20, cex = 2, cex.lab = 2)
+
+                        # x             y
+                        # series[1], series[2]
+                        # series[2], series[3]
+                        # series[3], series[4]
+
+                        # espaço de entradas X
+                        X = matrix(series[1:999], ncol = 1)
+
+                        # espaço de saidas Y
+                        Y = as.numeric(series[2:1000])
+
+                        # Conjunto de treinamento
+                        id = 1:800
+                        X.train = matrix(X([id,], ncol=1))
+                        Y.train = Y[id,]
+
+                        # cONJUNTO DE TESTE
+                        X.test = matrix(X([id,], ncol=1))
+                        Y.test = Y[-id,]
+
+                        #Testing
+                        R = NULL
+                        for (i in 1:nrow(X.test)) {
+                            x = X.test[i,]
+                            y = dwnn(query = x, X = X.train, Y= Y.train, sigma = sigma)
+                            R = rbind(R, c(x,y))
+
+                        }
+
+                        plot(series[-id], pch = 20, cex = 2, cex.lab = 2)
+                        points(R[,2], col=2 , pch = 20)
+                    }
+
+
+                    test.sin2 <- function(sigma) {
+                        time = seq(0,9, length = 1000)
+                        series = sin(2*pi*time) # unidimensional
+                        par(mfrow=c(1,1))
+                        plot(series, xlim = c(0,1200), pch = 20, cex = 2, cex.lab = 2)
+                        locator(1)
+
+                        # x             y
+                        # series[1], series[2]
+                        # series[2], series[3]
+                        # series[3], series[4]
+
+                        # espaço de entradas X
+                        X = matrix(series[1:999], ncol = 1)
+
+                        # espaço de saidas Y
+                        Y = as.numeric(series[2:1000])
+
+                        # Conjunto de treinamento
+                        id = 1:800
+                        X.train = X
+                        Y.train = Y
+
+                        # pREDIÇAO RECORRENTE ---> redes neurais profundas/ Deep Learning
+                        #                          uma saida vira entrada para prever uma proxima saida
+                        R = matrix(NA, nrow = row(X), ncol = 2)
+                        x = series[1000] #y[999]
+                         for (I in 1:lag.max ){
+                            dwnn(query = x, X = X.train, Y = Y.train, sigma = sigma)
+                            R = rbind(R, c(x,y))
+                            x=y
+
+                         }
+
+                         points(R[,2], pch= 20, cexx = 2)
+
+}
 
 
 
